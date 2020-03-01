@@ -1,5 +1,5 @@
 package Stone.ast;
-import Stone.Token;
+import Stone.Lexer.Token;
 
 public class Name extends ASTLeaf {
     public Name(Token t) { super(t); }

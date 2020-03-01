@@ -1,8 +1,6 @@
-package tests;
-
-import Stone.Lexer;
-import Stone.ParseException;
-import Stone.Token;
+import Stone.Lexer.Lexer;
+import Stone.exception.ParseException;
+import Stone.Lexer.Token;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +13,8 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class LexerTest {
     private static String regexPat
@@ -26,12 +26,8 @@ class LexerTest {
     private LineNumberReader reader;
     private Lexer lexer;
 
-    @BeforeAll
-    static void initAll() {
-    }
-
     @BeforeEach
-    void init() {
+    void setup() {
         InputStream inputStream = new InputStream() {
             @Override
             public int read() throws IOException {
@@ -40,8 +36,8 @@ class LexerTest {
         };
         this.pattern = Pattern.compile(regexPat);
         this.queue = new ArrayList<>();
-        this.hasMore = false;
-        this.reader = new LineNumberReader(new InputStreamReader(inputStream));
+        this.hasMore = true;
+        this.reader = mock(LineNumberReader.class);
 
         lexer = new Lexer(pattern, queue, hasMore, reader);
     }
@@ -90,9 +86,21 @@ class LexerTest {
         assertEquals(idTokenTwo,actualToken);
     }
 
+    @Test
     void testPeekWithILargerThanSizeOfQueueSuccess() {
-        this.hasMore = true;
-        this.reader.setLineNumber(3);
+        // return value
+        String readerLineReturnValue = "<=";
+        int readerGetLineNumberReturnValue = 10;
+        
+        // define the behavior of this.reader
+        try {
+            when(this.reader.readLine()).thenReturn(readerLineReturnValue);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        when(this.reader.getLineNumber()).thenReturn(readerGetLineNumberReturnValue);
+
+        Token expectedToken = new Lexer.IdToken(10,"<=");
         Token idTokenOne = new Lexer.IdToken(0,";");
         Token idTokenTwo = new Lexer.IdToken(1,">=");
         this.queue.add(idTokenOne);
@@ -103,7 +111,14 @@ class LexerTest {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        assertEquals(idTokenTwo,actualToken);
+        assertEquals(true,tokenEquals(expectedToken,actualToken));
+
+    }
+
+    private boolean tokenEquals(Token expectedToken,Token actualToken) {
+        return (expectedToken.isIdentifier() == actualToken.isIdentifier())  &&
+                (expectedToken.getLineNumber() == actualToken.getLineNumber()) &&
+                (expectedToken.getText().equals(actualToken.getText()));
     }
     @Test
     void testReadLine() {

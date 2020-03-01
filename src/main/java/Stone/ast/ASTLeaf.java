@@ -1,6 +1,6 @@
 package Stone.ast;
 
-import Stone.Token;
+import Stone.Lexer.Token;
 
 import java.util.ArrayList;
 import java.util.Iterator;

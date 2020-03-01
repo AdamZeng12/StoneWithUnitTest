@@ -1,4 +1,6 @@
-package Stone;
+package Stone.Lexer;
+
+import Stone.exception.ParseException;
 
 import java.io.IOException;
 import java.io.LineNumberReader;

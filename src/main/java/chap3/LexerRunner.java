@@ -1,9 +1,9 @@
 package chap3;
 
-import Stone.CodeDialog;
-import Stone.Lexer;
-import Stone.ParseException;
-import Stone.Token;
+import Stone.UI.CodeDialog;
+import Stone.Lexer.Lexer;
+import Stone.exception.ParseException;
+import Stone.Lexer.Token;
 
 public class LexerRunner {
     public static void main(String[] args) throws ParseException {

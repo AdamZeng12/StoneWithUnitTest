@@ -1,4 +1,4 @@
-package Stone;
+package Stone.UI;
 
 import javax.swing.*;
 import java.io.*;
